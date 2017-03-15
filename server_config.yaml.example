@@ -1,0 +1,10 @@
+# QingStor access key settings.
+access_key_id: ACCESS_KEY_ID
+secret_access_key: SECRET_ACCESS_KEY
+
+# SDK log level.
+log_level: debug
+
+# Signature server settings.
+host: 127.0.0.1
+port: 9000
