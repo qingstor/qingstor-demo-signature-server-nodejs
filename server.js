@@ -19,6 +19,7 @@ import _ from 'lodash';
 import yaml from 'js-yaml';
 import express from 'express';
 import body from 'body-parser';
+import cors from 'cors';
 import {Config, Signer} from 'qingstor-sdk';
 
 // Load settings.
@@ -32,6 +33,8 @@ server.disable('x-powered-by');
 server.disable('etag');
 server.use(body.urlencoded({extended: false}));
 server.use(body.json());
+server.use(cors());
+
 
 // Setup config.
 const config = new Config().loadConfig({
