@@ -163,7 +163,7 @@ Connection: close
 _Request Example:_
 
 ``` http
-POST /operation?channel=query HTTP/1.1
+POST /string-to-sign?channel=query HTTP/1.1
 Content-Type: application/json; charset=utf-8
 Host: 127.0.0.1:9000
 Connection: close
@@ -197,7 +197,7 @@ Connection: close
 _Request Example:_
 
 ``` http
-POST /operation?channel=header HTTP/1.1
+POST /string-to-sign?channel=header HTTP/1.1
 Content-Type: application/json; charset=utf-8
 Host: 127.0.0.1:9000
 Connection: close
@@ -205,16 +205,7 @@ User-Agent: WTF/3.0.16 (Macintosh; OS X/10.12.3) GCDHTTPRequest
 Content-Length: 327
 
 {
-  "method": "PUT",
-  "uri": "https://pek3a.qingstor.com:443/aspire-test/test-file",
-  "body": "Hello",
-  "headers": {
-    "Host": "pek3a.qingstor.com",
-    "X-QS-Date": "Wed, 15 Mar 2017 08:57:16 GMT",
-    "Content-Type": "",
-    "Content-Length": 5,
-    "User-Agent": "qingstor-sdk-js/2.2.1 (Node.js v7.7.2; darwin x64)"
-  }
+  "string_to_sign": "GET\n\napplication/octet-stream\Wed, 15 Mar 2017 07:07:52 GMT\n/aspire-test/test-file",
 }
 ```
 
@@ -226,6 +217,7 @@ Content-Type: application/json; charset=utf-8
 Content-Length: 92
 Date: Wed, 15 Mar 2017 07:07:52 GMT
 Connection: close
+
 {
   "authorization": "QS GFTIRJPZQFYLZQOSEHFO:8otBnH4VqE+v8J4TEHAPg9O95nJNQyK22SAWF7PfGhY="
 }

@@ -172,7 +172,7 @@ router.post('/string-to-sign', (request, response) => {
     //
     // Request Example:
     //
-    // POST /operation?channel=query HTTP/1.1
+    // POST /string-to-sign?channel=query HTTP/1.1
     // Content-Type: application/json; charset=utf-8
     // Host: 127.0.0.1:9000
     // Connection: close
@@ -211,7 +211,7 @@ router.post('/string-to-sign', (request, response) => {
     //
     // Request Example:
     //
-    // POST /operation?channel=header HTTP/1.1
+    // POST /string-to-sign?channel=header HTTP/1.1
     // Content-Type: application/json; charset=utf-8
     // Host: 127.0.0.1:9000
     // Connection: close
@@ -219,16 +219,7 @@ router.post('/string-to-sign', (request, response) => {
     // Content-Length: 327
     //
     // {
-    //   "method": "PUT",
-    //   "uri": "https://pek3a.qingstor.com:443/aspire-test/test-file",
-    //   "body": "Hello",
-    //   "headers": {
-    //     "Host": "pek3a.qingstor.com",
-    //     "X-QS-Date": "Wed, 15 Mar 2017 08:57:16 GMT",
-    //     "Content-Type": "",
-    //     "Content-Length": 5,
-    //     "User-Agent": "qingstor-sdk-js/2.2.1 (Node.js v7.7.2; darwin x64)"
-    //   }
+    //   "string_to_sign": "GET\n\napplication/octet-stream\Wed, 15 Mar 2017 07:07:52 GMT\n/aspire-test/test-file",
     // }
     //
     // Response Example:
