@@ -28,9 +28,9 @@ const settings = yaml.safeLoad(
 
 // Setup config.
 const config = new Config().loadConfig({
-  'host':      settings.host,
-  'port':      settings.port,
-  'protocol':  settings.protocol,
+  'host': settings.host,
+  'port': settings.port,
+  'protocol': settings.protocol,
   'log_level': settings.log_level,
 });
 
@@ -41,19 +41,19 @@ const signatureServer = `${
 
 // Initialize bucket.
 const qsService = new QingStor(config);
-const bucket    = qsService.Bucket(settings.bucket_name, settings.zone);
+const bucket = qsService.Bucket(settings.bucket_name, settings.zone);
 
 // List objects.
 const listObjectsExample = callback => {
   const listObjectsRequest = bucket.listObjectsRequest({prefix: 'test/'});
-  const expires            = parseInt(Date.now() / 1000 + 3600);
+  const expires = parseInt(Date.now() / 1000 + 3600);
 
   // Sign request operation by query parameters.
   const body = JSON.stringify(_.extend({expires}, listObjectsRequest.operation), null, 2);
   console.log('Sending request to signature server: ', body);
   request({
-    method:  'POST',
-    uri:     `${signatureServer}/operation?channel=query`,
+    method: 'POST',
+    uri: `${signatureServer}/operation?channel=query`,
     headers: {'Content-Type': 'application/json'},
     body,
   }, (error, response) => {
@@ -64,11 +64,38 @@ const listObjectsExample = callback => {
     // Send signed request.
     listObjectsRequest.send((error, response) => {
       console.log('Finished list objects request.');
-      console.log(JSON.stringify(JSON.parse(response.body), null, 2));
+      console.log(response.keys);
       callback();
     });
   });
 };
+
+// List objects.
+const listObjectsByHeadersExample = callback => {
+  const listObjectsRequest = bucket.listObjectsRequest();
+
+  // Sign request operation by query parameters.
+  const body = JSON.stringify(listObjectsRequest.operation, null, 2);
+  console.log('Sending request to signature server: ', body);
+  request({
+    method: 'POST',
+    uri: `${signatureServer}/operation?channel=header`,
+    headers: {'Content-Type': 'application/json'},
+    body,
+  }, (error, response) => {
+    // Apply signature.
+    const data = JSON.parse(response.body);
+    listObjectsRequest.applySignature(data.authorization);
+
+    // Send signed request.
+    listObjectsRequest.send((error, response) => {
+      console.log('Finished list objects request.');
+      console.log(response.keys);
+      callback();
+    });
+  });
+};
+
 
 // Put object.
 const putObjectExample = callback => {
@@ -78,8 +105,8 @@ const putObjectExample = callback => {
   const body = JSON.stringify(putObjectRequest.operation, null, 2);
   console.log('Sending request to signature server: ', body);
   request({
-    method:  'POST',
-    uri:     `${signatureServer}/operation?channel=header`,
+    method: 'POST',
+    uri: `${signatureServer}/operation?channel=header`,
     headers: {'Content-Type': 'application/json'},
     body,
   }, (error, response) => {
@@ -89,7 +116,7 @@ const putObjectExample = callback => {
     // Send signed request.
     putObjectRequest.send((error, response) => {
       console.log('Finished put object request.');
-      console.log(response.body);
+      console.log(response.statusCode);
       callback();
     });
   });
@@ -98,7 +125,7 @@ const putObjectExample = callback => {
 // Get object.
 const getObjectExample = callback => {
   const getObjectRequest = bucket.getObjectRequest('test-file');
-  const expires          = parseInt(Date.now() / 1000 + 3600);
+  const expires = parseInt(Date.now() / 1000 + 3600);
 
   // Sign request operation by string to sign.
   const body = JSON.stringify({
@@ -107,8 +134,8 @@ const getObjectExample = callback => {
   }, null, 2);
   console.log('Sending request to signature server: ', body);
   request({
-    method:  'POST',
-    uri:     `${signatureServer}/string-to-sign?channel=query`,
+    method: 'POST',
+    uri: `${signatureServer}/string-to-sign?channel=query`,
     headers: {'Content-Type': 'application/json'},
     body,
   }, (error, response) => {
@@ -119,7 +146,7 @@ const getObjectExample = callback => {
     // Send signed request.
     getObjectRequest.send((error, response) => {
       console.log('Finished get object request.');
-      console.log(response.body);
+      console.log(response.statusCode);
       callback();
     });
   });
@@ -135,8 +162,8 @@ const deleteObjectExample = callback => {
   }, null, 2);
   console.log('Sending request to signature server: ', body);
   request({
-    method:  'POST',
-    uri:     `${signatureServer}/string-to-sign?channel=header`,
+    method: 'POST',
+    uri: `${signatureServer}/string-to-sign?channel=header`,
     headers: {'Content-Type': 'application/json'},
     body,
   }, (error, response) => {
@@ -147,13 +174,12 @@ const deleteObjectExample = callback => {
     // Send signed request.
     deleteObjectRequest.send((error, response) => {
       console.log('Finished delete object request.');
-      console.log(response.body);
+      console.log(response.statusCode);
       callback();
     });
   });
 };
 
-// Execute.
 async.waterfall([
-  listObjectsExample, putObjectExample, getObjectExample, deleteObjectExample,
+  listObjectsExample, listObjectsByHeadersExample, putObjectExample, getObjectExample, deleteObjectExample,
 ]);
