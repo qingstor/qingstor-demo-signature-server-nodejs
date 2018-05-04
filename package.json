@@ -21,10 +21,11 @@
   "dependencies": {
     "async": "^2.1.5",
     "body-parser": "^1.17.1",
+    "cors": "^2.8.4",
     "express": "^4.15.2",
     "js-yaml": "^3.8.2",
     "lodash": "^4.17.4",
-    "qingstor-sdk": "^2.2.2",
+    "qingstor-sdk": "^2.2.10",
     "request": "^2.81.0"
   },
   "devDependencies": {
